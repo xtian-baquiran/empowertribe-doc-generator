@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Empower Tribe — EU DoC Statement Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #f5f2ec;
+    --surface: #ffffff;
+    --surface2: #edeae3;
+    --ink: #1a1a18;
+    --ink2: #5a5a52;
+    --ink3: #9a9a8e;
+    --accent: #d4500a;
+    --accent2: #f07030;
+    --accent-light: #fdf0e8;
+    --border: #dedad2;
+    --success: #2a7a4a;
+    --success-light: #e8f5ee;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Syne', sans-serif;
+    --radius: 10px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(212,80,10,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 85% 80%, rgba(240,112,48,0.05) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative; z-index: 10;
+    background: var(--ink);
+    padding: 0 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    border-bottom: 3px solid var(--accent);
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 800; color: white;
+    letter-spacing: -1px;
+  }
+
+  .logo-text {
+    font-size: 15px; font-weight: 700;
+    color: #ffffff; letter-spacing: 0.5px;
+  }
+
+  .logo-sub {
+    font-size: 11px; color: #888880;
+    font-family: var(--mono); font-weight: 300;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  .header-badge {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--accent2); letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid rgba(212,80,10,0.4);
+    padding: 4px 10px; border-radius: 20px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    position: relative; z-index: 1;
+    max-width: 860px; margin: 0 auto;
+    padding: 52px 24px 80px;
+  }
+
+  /* ── PAGE TITLE ── */
+  .page-title {
+    margin-bottom: 48px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .page-title h1 {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--ink);
+  }
+
+  .page-title h1 span {
+    color: var(--accent);
+  }
+
+  .page-title p {
+    margin-top: 12px;
+    font-size: 15px; font-weight: 400;
+    color: var(--ink2); max-width: 520px;
+    line-height: 1.6;
+    font-family: var(--mono);
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .card-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 20px;
+    font-family: var(--mono);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .card-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* ── FORM ── */
+  .field-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 20px; margin-bottom: 20px;
+  }
+
+  @media (max-width: 600px) {
+    .field-row { grid-template-columns: 1fr; }
+    header { padding: 0 20px; }
+    main { padding: 32px 16px 60px; }
+    .card { padding: 24px 20px; }
+  }
+
+  .field { display: flex; flex-direction: column; gap: 7px; }
+
+  label {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--ink2); font-family: var(--mono);
+  }
+
+  input, select {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-family: var(--sans); font-size: 15px; font-weight: 600;
+    color: var(--ink);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none; width: 100%;
+    appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212,80,10,0.12);
+  }
+
+  input::placeholder { color: var(--ink3); font-weight: 400; }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute; right: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink3); pointer-events: none;
+    font-size: 14px;
+  }
+
+  /* ── GENERATE BUTTON ── */
+  .btn-generate {
+    width: 100%; padding: 16px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    border: none; border-radius: var(--radius);
+    color: white; font-family: var(--sans);
+    font-size: 16px; font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(212,80,10,0.3);
+    margin-top: 8px;
+  }
+
+  .btn-generate:hover:not(:disabled) {
+    opacity: 0.92; transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(212,80,10,0.4);
+  }
+
+  .btn-generate:active:not(:disabled) { transform: translateY(0); }
+
+  .btn-generate:disabled {
+    opacity: 0.4; cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .btn-icon { font-size: 18px; }
+
+  /* ── SPINNER ── */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── RESULT CARD ── */
+  #result-card {
+    display: none;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .result-meta {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .meta-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-family: var(--mono); font-size: 12px;
+    color: var(--ink2); font-weight: 500;
+  }
+
+  .meta-chip strong { color: var(--accent); }
+
+  .statement-type-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light);
+    border: 1px solid rgba(212,80,10,0.25);
+    border-radius: 6px; padding: 6px 14px;
+    font-family: var(--mono); font-size: 12px;
+    color: var(--accent); font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .doc-text-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    font-family: var(--mono); font-size: 14px;
+    line-height: 1.75; color: var(--ink);
+    letter-spacing: 0.1px;
+    position: relative;
+  }
+
+  .doc-text-box p { margin: 0; }
+
+  /* ── ACTION BUTTONS ── */
+  .action-row {
+    display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;
+  }
+
+  .btn-action {
+    padding: 11px 20px; border-radius: var(--radius);
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.18s;
+    display: flex; align-items: center; gap: 7px;
+  }
+
+  .btn-copy {
+    background: var(--ink); color: white; border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .btn-copy:hover { background: #333; }
+
+  .btn-print {
+    background: transparent; color: var(--ink2);
+    border: 1.5px solid var(--border);
+  }
+  .btn-print:hover { border-color: var(--ink2); color: var(--ink); }
+
+  .btn-reset {
+    background: transparent; color: var(--ink3);
+    border: 1.5px solid var(--border);
+    margin-left: auto;
+  }
+  .btn-reset:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ── REFERENCE TABLE ── */
+  .ref-card {
+    animation-delay: 0.1s;
+  }
+
+  .ref-table { width: 100%; border-collapse: collapse; }
+
+  .ref-table th {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--ink3); font-weight: 500;
+    padding: 8px 12px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ref-table td {
+    padding: 11px 12px;
+    font-size: 13px; vertical-align: top;
+    border-bottom: 1px solid var(--surface2);
+  }
+
+  .ref-table tr:last-child td { border-bottom: none; }
+
+  .ref-table tr:hover td { background: var(--surface2); }
+
+  .type-tag {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 4px;
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .tag-emc { background: #e8f0ff; color: #2a4aaa; }
+  .tag-emcs { background: #fff0e0; color: #aa4a00; }
+  .tag-wireless { background: #e8ffe8; color: #1a6a1a; }
+  .tag-passive { background: #f5f0ff; color: #6a2aaa; }
+  .tag-battery { background: #fff5e0; color: #8a5a00; }
+  .tag-en54 { background: #ffe8e8; color: #aa2020; }
+
+  .rule-text {
+    font-size: 13px; color: var(--ink2);
+    line-height: 1.5; font-family: var(--mono);
+  }
+
+  /* ── ERROR ── */
+  .error-box {
+    background: #fff0f0; border: 1px solid #ffcccc;
+    border-radius: var(--radius); padding: 16px 20px;
+    font-family: var(--mono); font-size: 13px; color: #cc2020;
+    display: none; margin-top: 12px;
+  }
+
+  /* ── COPY TOAST ── */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: white;
+    padding: 10px 24px; border-radius: 30px;
+    font-family: var(--mono); font-size: 13px;
+    opacity: 0; transition: all 0.3s; pointer-events: none;
+    z-index: 999; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: white; }
+    header, .card:not(#result-card), .ref-card, .action-row, .btn-generate { display: none !important; }
+    #result-card { display: block !important; box-shadow: none; border: 1px solid #ccc; }
+    main { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">ET</div>
+    <div>
+      <div class="logo-text">Empower Tribe</div>
+      <div class="logo-sub">Compliance Tools</div>
+    </div>
+  </div>
+  <div class="header-badge">EU DoC Generator</div>
+</header>
+
+<main>
+  <div class="page-title">
+    <h1>EU Declaration of<br><span>Conformity</span> Generator</h1>
+    <p>Select a brand and enter a model name. The page connects online to automatically classify the product and generate the correct EU DoC statement.</p>
+  </div>
+
+  <!-- INPUT CARD -->
+  <div class="card" style="animation-delay:0.05s">
+    <div class="card-label">Product Details</div>
+
+    <!-- Empower Tribe parent label -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:10px 16px;background:var(--accent-light);border:1px solid rgba(212,80,10,0.2);border-radius:var(--radius);">
+      <span style="font-size:18px;">🏢</span>
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);">Parent Company</div>
+        <div style="font-size:15px;font-weight:800;color:var(--accent);letter-spacing:0.3px;">Empower Tribe</div>
+      </div>
+      <div style="margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink3);">All statements issued under this entity</div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="brandInput">Brand <span style="font-weight:400;color:var(--ink3)">(Empower Tribe sub-brand)</span></label>
+        <div class="select-wrap">
+          <select id="brandInput">
+            <option value="">— Select a brand —</option>
+            <option value="Behringer">Behringer</option>
+            <option value="Midas">Midas</option>
+            <option value="Klark Teknik">Klark Teknik</option>
+            <option value="Turbosound">Turbosound</option>
+            <option value="TC Electronic">TC Electronic</option>
+            <option value="TC Helicon">TC Helicon</option>
+            <option value="Tannoy">Tannoy</option>
+            <option value="Lab Gruppen">Lab Gruppen</option>
+            <option value="Lake">Lake</option>
+            <option value="Aston Microphones">Aston Microphones</option>
+            <option value="Bugera">Bugera</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="modelInput">Model Name / Number</label>
+        <input type="text" id="modelInput" placeholder="e.g. XR-2400 Pro" />
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:24px">
+      <label for="categoryHint">Product Category <span style="font-weight:400;color:var(--ink3)">(optional — override AI or use if offline)</span></label>
+      <div class="select-wrap">
+        <select id="categoryHint">
+          <option value="">— Let AI classify automatically —</option>
+          <option value="wireless">Wireless / Bluetooth / Wi-Fi product</option>
+          <option value="mains">Mains-powered active electronics (EMC + Safety)</option>
+          <option value="battery_active">Battery-powered active electronics (EMC only)</option>
+          <option value="passive">Passive product (no electronics)</option>
+          <option value="battery_unit">Battery unit / power bank</option>
+          <option value="en54">EN 54 / Fire alarm / Evacuation system</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-generate" id="generateBtn" onclick="generateDoc()">
+      <span class="btn-icon">⚡</span>
+      <span id="btnLabel">Generate EU DoC Statement</span>
+      <span class="spinner" id="spinner"></span>
+    </button>
+
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="card" id="result-card">
+    <div class="card-label">Generated Statement</div>
+
+    <div class="result-meta" id="resultMeta"></div>
+
+    <div class="statement-type-badge" id="statementBadge"></div>
+
+    <div class="doc-text-box">
+      <p id="docText"></p>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-action btn-copy" onclick="copyText()">
+        📋 Copy Statement
+      </button>
+      <button class="btn-action btn-print" onclick="window.print()">
+        🖨️ Print
+      </button>
+      <button class="btn-action btn-reset" onclick="resetForm()">
+        ↺ New Statement
+      </button>
+    </div>
+  </div>
+
+  <!-- REFERENCE CARD -->
+  <div class="card ref-card">
+    <div class="card-label">Classification Reference</div>
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Statement Type</th>
+          <th>Classification Rule</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="type-tag tag-wireless">Wireless</span></td>
+          <td class="rule-text">Bluetooth, Wi-Fi, RF, wireless mic, or any intentional radio transmission</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag tag-emcs">EMC + Safety</span></td>
+          <td class="rule-text">Mains-powered (50–1000V AC) active electronics</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag tag-emc">EMC</span></td>
+          <td class="rule-text">Active electronics, NOT mains-powered, NOT wireless</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag tag-passive">Passive</span></td>
+          <td class="rule-text">No electronics — passive speakers, stands, brackets, cables</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag tag-battery">Battery</span></td>
+          <td class="rule-text">Primarily a battery unit without active signal processing</td>
+        </tr>
+        <tr>
+          <td><span class="type-tag tag-en54">EN 54</span></td>
+          <td class="rule-text">EN 54 certified fire alarm or evacuation system equipment</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<div class="toast" id="toast">✓ Statement copied to clipboard</div>
+
+<script>
+const STATEMENTS = {
+  "EMC": {
+    label: "Simple EU DoC statement — EMC",
+    tag: "EMC",
+    tagClass: "tag-emc",
+    text: (brand) => `Hereby, ${brand} declares that this product is in compliance with General Product Safety Regulation (EU) 2023/988, Directive 2014/30/EU, Directive 2011/65/EU and Amendment 2015/863/EU, Directive 2012/19/EU, Regulation 519/2012 REACH SVHC and Directive 1907/2006/EC.`
+  },
+  "EMC+Safety": {
+    label: "Simple EU DoC statement — EMC + Safety",
+    tag: "EMC + Safety",
+    tagClass: "tag-emcs",
+    text: (brand) => `Hereby, ${brand} declares that this product is in compliance with Directive 2014/35/EU, Directive 2014/30/EU, Directive 2011/65/EU and Amendment 2015/863/EU, Directive 2012/19/EU, Regulation 519/2012 REACH SVHC and Directive 1907/2006/EC.`
+  },
+  "Wireless": {
+    label: "Simple EU DoC statement — Wireless",
+    tag: "Wireless",
+    tagClass: "tag-wireless",
+    text: (brand) => `Hereby, ${brand} declares that this product is in compliance with Directive 2014/53/EU, Directive 2014/30/EU, Directive 2014/35/EU, Directive 2011/65/EU and Amendment 2015/863/EU, Directive 2012/19/EU, Regulation 519/2012 REACH SVHC and Directive 1907/2006/EC.`
+  },
+  "Passive": {
+    label: "Simple EU DoC statement — Passive",
+    tag: "Passive",
+    tagClass: "tag-passive",
+    text: (brand) => `Hereby, ${brand} declares that this product is in compliance with General Product Safety Regulation (EU) 2023/988, Directive 2011/65/EU and Amendment 2015/863/EU, Directive 2012/19/EU, Regulation 519/2012 REACH SVHC and Directive 1907/2006/EC, and this passive product is not applicable to EMC Directive 2014/30/EU, LV Directive 2014/35/EU.`
+  },
+  "Battery": {
+    label: "Simple EU DoC statement — Battery",
+    tag: "Battery",
+    tagClass: "tag-battery",
+    text: (brand) => `Hereby, ${brand} declares that this product is in compliance with Directive 2006/66/EC, Directive 2012/19/EU, Regulation 519/2012 REACH SVHC and Directive 1907/2006/EC, and this passive product is not applicable to EMC Directive 2014/30/EU, LV Directive 2014/35/EU.`
+  },
+  "EN54": {
+    label: "Simple EU DoC statement — EN 54",
+    tag: "EN 54",
+    tagClass: "tag-en54",
+    text: (brand) => `Hereby, ${brand} declares that this product is in compliance with Regulation (EU) No 305/2011, Regulation 519/2012 REACH SVHC and Directive 1907/2006/EC, and this passive product is not applicable to EMC Directive 2014/30/EU, LV Directive 2014/35/EU.`
+  }
+};
+
+const CATEGORY_MAP = {
+  "wireless": "Wireless",
+  "mains": "EMC+Safety",
+  "battery_active": "EMC",
+  "passive": "Passive",
+  "battery_unit": "Battery",
+  "en54": "EN54"
+};
+
+async function generateDoc() {
+  const subBrand = document.getElementById('brandInput').value.trim();
+  const model = document.getElementById('modelInput').value.trim();
+  const category = document.getElementById('categoryHint').value;
+  const errorBox = document.getElementById('errorBox');
+  const resultCard = document.getElementById('result-card');
+
+  errorBox.style.display = 'none';
+  resultCard.style.display = 'none';
+
+  if (!subBrand) { showError('Please select a brand from the dropdown.'); return; }
+  if (!model) { showError('Please enter a model name or number.'); return; }
+
+  setLoading(true);
+
+  try {
+    let statementKey;
+    if (category && CATEGORY_MAP[category]) {
+      statementKey = CATEGORY_MAP[category];
+    } else {
+      statementKey = await classifyWithClaude(subBrand, model);
+    }
+
+    const stmt = STATEMENTS[statementKey];
+    if (!stmt) throw new Error("Could not determine statement type.");
+
+    // Statement text always uses "Empower Tribe"; sub-brand shown only in metadata
+    showResult(subBrand, model, stmt);
+  } catch (e) {
+    showError('Could not classify product. Please select a category manually from the dropdown above.');
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function classifyWithClaude(subBrand, model) {
+  // First attempt: smart local keyword classification (always works, no internet needed)
+  const localResult = localClassify(subBrand, model);
+
+  // Try online AI for better accuracy, fall back to local if unavailable
+  try {
+    const aiResult = await tryPollinationsAI(subBrand, model);
+    if (aiResult) return aiResult;
+  } catch(e) {
+    console.warn('AI service unavailable, using local classification:', e.message);
+  }
+
+  return localResult;
+}
+
+function localClassify(subBrand, model) {
+  // Smart keyword-based classification — works fully offline
+  const m = (subBrand + ' ' + model).toLowerCase();
+
+  // EN54 check first
+  if (/en.?54|fire.?alarm|evacu|pa.?system.*(ceiling|install)|voice.?alarm/.test(m)) return 'EN54';
+
+  // Battery/power units
+  if (/psu|power.?supply|battery.?pack|bp\d|ups/.test(m) && !/amp|mixer|speaker|mic/.test(m)) return 'Battery';
+
+  // Wireless
+  if (/bluetooth|wi.?fi|wireless|uhf|vhf|rf|xr18|xr16|xr12|xair|air|airplay|digital.?wireless|bespeco|bodypack|handheld.?tx|transmit/.test(m)) return 'Wireless';
+
+  // Passive (no electronics)
+  if (/cable|cables|passive|stand|bracket|enclosure|cabinet(?!.*active)|passive.?speaker|di.?box(?!.*active)|patch/.test(m)) return 'Passive';
+
+  // Brand-specific knowledge
+  const brand = subBrand.toLowerCase();
+
+  // Tannoy/Turbosound/Lab Gruppen — mostly mains powered
+  if (/lab.?gruppen|labgruppen/.test(brand)) return 'EMC+Safety';
+
+  // TC Helicon — usually mains or USB powered active
+  if (/tc.?helicon/.test(brand)) return 'EMC+Safety';
+
+  // Aston Microphones — passive/active mics
+  if (/aston/.test(brand)) {
+    if (/active|condenser|usb/.test(m)) return 'EMC';
+    return 'Passive';
+  }
+
+  // Mains-powered indicators
+  if (/amp|amplifier|powered.?speaker|active.?speaker|mixer|console|interface|processor|rack|dsp|power.?amp|class.?d|d.*amp|pa.*system/.test(m)) return 'EMC+Safety';
+
+  // Battery-powered active
+  if (/usb|battery.?power|9v|phantom|di.?box|stomp|pedal|footswitch/.test(m)) return 'EMC';
+
+  // Default for known active brands
+  if (/behringer|midas|klark|tc.?electronic|bugera/.test(brand)) return 'EMC+Safety';
+
+  return 'EMC'; // safe default
+}
+
+async function tryPollinationsAI(subBrand, model) {
+  const prompt = `EU compliance classifier. Brand: ${subBrand}, Model: ${model}. Classify into: Wireless (Bluetooth/WiFi/RF/wireless), EMC+Safety (mains-powered electronics), EMC (battery/USB active electronics), Passive (no electronics), Battery (power unit only), EN54 (fire alarm). Reply with ONLY the key word.`;
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout
+
+  try {
+    const response = await fetch(
+      `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&seed=1`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timeout);
+    if (!response.ok) return null;
+    const raw = (await response.text()).trim().toLowerCase().replace(/[^a-z0-9+\s]/g, '');
+    return normalizeKey(raw);
+  } catch(e) {
+    clearTimeout(timeout);
+    return null;
+  }
+}
+
+function normalizeKey(r) {
+  if (r.includes('wireless')) return 'Wireless';
+  if (r.includes('emc+safety') || r.includes('emcsafety') || r.includes('emc safety') || r.includes('safety')) return 'EMC+Safety';
+  if (r.includes('passive')) return 'Passive';
+  if (r.includes('battery')) return 'Battery';
+  if (r.includes('en54') || r.includes('en 54')) return 'EN54';
+  if (r.includes('emc')) return 'EMC';
+  return null;
+}
+
+function showResult(subBrand, model, stmt) {
+  // Statement text ALWAYS uses "Empower Tribe" as the declaring entity
+  const text = stmt.text("Empower Tribe");
+
+  document.getElementById('resultMeta').innerHTML = `
+    <span class="meta-chip">Parent: <strong>Empower Tribe</strong></span>
+    <span class="meta-chip">Brand: <strong>${escapeHtml(subBrand)}</strong></span>
+    <span class="meta-chip">Model: <strong>${escapeHtml(model)}</strong></span>
+  `;
+
+  document.getElementById('statementBadge').innerHTML =
+    `<span style="opacity:0.6">📄</span> ${stmt.label}`;
+
+  document.getElementById('docText').textContent = text;
+
+  const card = document.getElementById('result-card');
+  card.style.display = 'block';
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyText() {
+  const text = document.getElementById('docText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2400);
+  });
+}
+
+function resetForm() {
+  document.getElementById('brandInput').value = '';
+  document.getElementById('modelInput').value = '';
+  document.getElementById('categoryHint').value = '';
+  document.getElementById('result-card').style.display = 'none';
+  document.getElementById('errorBox').style.display = 'none';
+  document.getElementById('modelInput').focus();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setLoading(on) {
+  const btn = document.getElementById('generateBtn');
+  const label = document.getElementById('btnLabel');
+  const spinner = document.getElementById('spinner');
+  btn.disabled = on;
+  label.textContent = on ? 'Classifying product...' : 'Generate EU DoC Statement';
+  spinner.style.display = on ? 'block' : 'none';
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = '⚠ ' + msg;
+  box.style.display = 'block';
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Allow Enter key to trigger from model input
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.target.id === 'modelInput') {
+    generateDoc();
+  }
+});
+</script>
+</body>
+</html>
